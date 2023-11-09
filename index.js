@@ -39,39 +39,46 @@ const addNewPlayer = async (newPlayerData) => {
   return fetchJson(url, options);
 };
 
+
+function DisplayAllPlayers(data) {
+  const dynamicContentContainer = document.getElementById('playersList');
+
+  if (data && data.players && Array.isArray(data.players)) {
+    data.players.forEach(item => {
+      const itemDiv = document.createElement('div');
+      itemDiv.classList.add('player-item');
+      itemDiv.innerHTML = `
+          <div>
+              <h4>ID: ${item.id}</h4>
+              <h4>Name: ${item.name}</h4>
+              <p>Breed ${item.breed}</p>
+              <p>Status ${item.status}</p>
+              <img src="${item.imageUrl}" alt="${item.name} Image">
+          </div>
+      `;
+
+      dynamicContentContainer.appendChild(itemDiv);
+    });
+  } else {
+    dynamicContentContainer.innerHTML = 'Error: Invalid player data structure.';
+  }
+}
+
 const init = async () => {
   try {
+    const playersListContainer = document.getElementById('playersList');
     const players = await getAllPlayers();
-    console.log("all players: ", players);
-    
-    const player = await getPlayerById("1077");
-    console.log("player: ", player);
+
+    if (players) {
+      console.log("all players: ", players);
+      DisplayAllPlayers(players)
+    } else {
+      playersListContainer.innerHTML = 'Error: Unable to fetch player data.';
+    }
+
   } catch (error) {
     console.error('Error:', error.message);
   }
 };
 
-const addNewPlayerOnInit = async () => {
-  const newPlayerData = {
-    "id": 100,
-    "name": "dilmurod2",
-    "breed": "mak2",
-    "status": "bench",
-    "imageUrl": "https://media.tenor.com/FuYhS1n_c0IAAAAM/cat-piano.gif",
-    "teamId": null,
-    "cohortId": 23,
-  };
-
-  try {
-    const addedPlayer = await addNewPlayer(newPlayerData);
-    console.log("new player added: ", addedPlayer);
-  } catch (error) {
-    console.error('Error adding a new player:', error.message);
-  }
-};
-
-// Call init when the script starts
-init();
-
-// Call addNewPlayerOnInit if you want to add a new player separately
-addNewPlayerOnInit();
+init()
