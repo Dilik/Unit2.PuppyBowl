@@ -1,5 +1,6 @@
 const apiwka = 'https://fsa-puppy-bowl.herokuapp.com/api/2310-FSA-ET-WEB-FT-SF';
 const playersUrl = `${apiwka}/players`;
+const addPlayerForm = document.getElementById('addPlayerForm');
 
 const fetchJson = async (url, options = {}) => {
   try {
@@ -63,6 +64,24 @@ function DisplayAllPlayers(data) {
     dynamicContentContainer.innerHTML = 'Error: Invalid player data structure.';
   }
 }
+
+const addPlayer = async () => {
+  const name = document.getElementById('name').value;
+  const breed = document.getElementById('breed').value;
+  const status = document.getElementById('status').value;
+  const imageUrl = document.getElementById('imageUrl').value;
+
+  const newPlayerData = { name, breed, status, imageUrl };
+
+  const addedPlayer = await addNewPlayer(newPlayerData);
+
+  if (addedPlayer) {
+    // Assuming a successful addition, add the new player to the list
+    DisplayAllPlayers({ players: [addedPlayer] });
+  } else {
+    alert('Error adding player. Please try again.');
+  }
+};
 
 const init = async () => {
   try {
